@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> signInManager
+@inject UserManager<ApplicationUser> userManager
+
+<ul class="navbar-nav">
+    @if (signInManager.IsSignedIn(User))
+    {
+        //signInManger é inject no topo do codigo, e com esse if verifica se o usuario está loga assim mostrando as informações
+        <li class="nav-item">
+            <form method="post" asp-action="logout" asp-controller="account">
+                <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                    Logout @User.Identity.Name
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {//Informações sem estar logado
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+    }
+</ul>
