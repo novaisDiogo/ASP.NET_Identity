@@ -1,4 +1,5 @@
-﻿using IdentityDoZero.Models;
+﻿using IdentityDoZero.Data;
+using IdentityDoZero.Models;
 using IdentityDoZero.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -20,14 +21,16 @@ namespace IdentityDoZero.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ILogger<AdministrationController> logger;
+        private readonly ApplicationDbContext context;
 
         public AdministrationController(RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<AdministrationController> logger)
+            ILogger<AdministrationController> logger, ApplicationDbContext context)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
             this.logger = logger;
+            this.context = context;
         }
         //Trazer as claims cadastradas e exibir para o usuario Add ou remover
         [HttpGet]
@@ -48,14 +51,16 @@ namespace IdentityDoZero.Controllers
                 UserId = userId
             };
 
-            foreach (Claim claim in ClaimsStore.AllClaims)//Percorre tipos de claims que cadastramos no Model/ClaimsStore
+            var claims = context.ClaimValue.ToList();//Pega as claims do cadastradas no banco
+            
+            foreach (var claim in claims)//Percorre tipos de claims que cadastramos no Model/ClaimsStore
             {
                 UserClaim userClaim = new UserClaim
                 {
-                    ClaimType = claim.Type
+                    ClaimType = claim.Name
                 };
 
-                if (existingUserClaims.Any(c => c.Type == claim.Type && c.Value == "true"))//Se o usuario tiver as claims cadastradas com valor true check
+                if (existingUserClaims.Any(c => c.Type == claim.Name && c.Value == "true"))//Se o usuario tiver as claims cadastradas com valor true check
                 {
                     userClaim.IsSelected = true;
                 }
@@ -259,7 +264,7 @@ namespace IdentityDoZero.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
-            var user = await userManager.FindByIdAsync(id);//Trás usuario om id passado
+            var user = await userManager.FindByIdAsync(id);//Trás usuario com id passado
 
             if (user == null)
             {

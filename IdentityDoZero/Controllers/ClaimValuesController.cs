@@ -10,85 +10,86 @@ using IdentityDoZero.Models;
 
 namespace IdentityDoZero.Controllers
 {
-    public class TesteIdentitiesController : Controller
+    public class ClaimValuesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TesteIdentitiesController(ApplicationDbContext context)
+        public ClaimValuesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: TesteIdentities
+        // GET: ClaimValues
         public async Task<IActionResult> Index()
         {
-            return View(await _context.TesteIdentity.ToListAsync());
+            return View(await _context.ClaimValue.ToListAsync());
         }
 
-        // GET: TesteIdentities/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: ClaimValues/Details/5
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var testeIdentity = await _context.TesteIdentity
+            var claimValue = await _context.ClaimValue
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (testeIdentity == null)
+            if (claimValue == null)
             {
                 return NotFound();
             }
 
-            return View(testeIdentity);
+            return View(claimValue);
         }
 
-        // GET: TesteIdentities/Create
+        // GET: ClaimValues/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: TesteIdentities/Create
+        // POST: ClaimValues/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] TesteIdentity testeIdentity)
+        public async Task<IActionResult> Create([Bind("Id,Name")] ClaimValue claimValue)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(testeIdentity);
+                claimValue.Id = Guid.NewGuid();
+                _context.Add(claimValue);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(testeIdentity);
+            return View(claimValue);
         }
 
-        // GET: TesteIdentities/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: ClaimValues/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var testeIdentity = await _context.TesteIdentity.FindAsync(id);
-            if (testeIdentity == null)
+            var claimValue = await _context.ClaimValue.FindAsync(id);
+            if (claimValue == null)
             {
                 return NotFound();
             }
-            return View(testeIdentity);
+            return View(claimValue);
         }
 
-        // POST: TesteIdentities/Edit/5
+        // POST: ClaimValues/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] TesteIdentity testeIdentity)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] ClaimValue claimValue)
         {
-            if (id != testeIdentity.Id)
+            if (id != claimValue.Id)
             {
                 return NotFound();
             }
@@ -97,12 +98,12 @@ namespace IdentityDoZero.Controllers
             {
                 try
                 {
-                    _context.Update(testeIdentity);
+                    _context.Update(claimValue);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TesteIdentityExists(testeIdentity.Id))
+                    if (!ClaimValueExists(claimValue.Id))
                     {
                         return NotFound();
                     }
@@ -113,41 +114,41 @@ namespace IdentityDoZero.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(testeIdentity);
+            return View(claimValue);
         }
 
-        // GET: TesteIdentities/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: ClaimValues/Delete/5
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var testeIdentity = await _context.TesteIdentity
+            var claimValue = await _context.ClaimValue
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (testeIdentity == null)
+            if (claimValue == null)
             {
                 return NotFound();
             }
 
-            return View(testeIdentity);
+            return View(claimValue);
         }
 
-        // POST: TesteIdentities/Delete/5
+        // POST: ClaimValues/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var testeIdentity = await _context.TesteIdentity.FindAsync(id);
-            _context.TesteIdentity.Remove(testeIdentity);
+            var claimValue = await _context.ClaimValue.FindAsync(id);
+            _context.ClaimValue.Remove(claimValue);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TesteIdentityExists(int id)
+        private bool ClaimValueExists(Guid id)
         {
-            return _context.TesteIdentity.Any(e => e.Id == id);
+            return _context.ClaimValue.Any(e => e.Id == id);
         }
     }
 }

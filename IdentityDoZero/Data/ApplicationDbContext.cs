@@ -14,7 +14,8 @@ namespace IdentityDoZero.Data
             : base(options)
         {
         }
-        public DbSet<IdentityDoZero.Models.TesteIdentity> TesteIdentity { get; set; }
+
+        public DbSet<IdentityDoZero.Models.ClaimValue> ClaimValue { get; set; }
 
         //Função para Remover os Cascade das ForeignKey das tabelas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,5 +27,6 @@ namespace IdentityDoZero.Data
                 foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
+
     }
 }
